@@ -9,6 +9,7 @@ geopy==1.22.0
 google-auth==1.17.2
 google-auth-oauthlib==0.4.1
 gspread==3.6.0
+gunicorn==20.0.4
 h11==0.9.0
 httplib2==0.18.1
 idna==2.9
