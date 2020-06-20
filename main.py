@@ -2,6 +2,7 @@ import os
 import json
 import gspread
 from fastapi import FastAPI
+from fastapi.responses import PlainTextResponse
 from volunteer_match import find_nearest_volunteers
 from oauth2client.service_account import ServiceAccountCredentials
 from dotenv import load_dotenv
@@ -19,8 +20,17 @@ gc = gspread.authorize(creds)
 
 app = FastAPI()
 
+
 @app.get("/volunteer-match/")
-def get_nearest_volunteers(latlong: str, state: str, key: str, tablefmt: str=None):
+def get_nearest_volunteers(latlong: str, state: str, key: str):
+    try:
+        return find_nearest_volunteers(latlong, state, key, gc)
+    except Exception as e:
+        print(e)
+
+
+@app.get("/volunteer-match/text/", response_class=PlainTextResponse)
+def get_nearest_volunteers(latlong: str, state: str, key: str, tablefmt: str='simple'):
     try:
         return find_nearest_volunteers(latlong, state, key, gc, tablefmt)
     except Exception as e:

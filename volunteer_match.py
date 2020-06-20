@@ -20,7 +20,7 @@ def miles_between(row, client_lat, client_long):
     return round(geopy.distance.VincentyDistance(volunteer_coords, client_coords).miles, 2)
 
 
-def find_nearest_volunteers(lat_long, state, key, gc, tablefmt):
+def find_nearest_volunteers(lat_long, state, key, gc, tablefmt=None):
     '''
     Returns a list of the nearest volunteers in the state to the given client's coordinates
     :param lat_long: the client's coordinates (i.e. '40.23893, -80.32871')
