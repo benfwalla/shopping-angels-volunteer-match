@@ -20,8 +20,8 @@ gc = gspread.authorize(creds)
 app = FastAPI()
 
 @app.get("/volunteer-match/")
-def get_nearest_volunteers(latlong: str, state: str, key: str):
+def get_nearest_volunteers(latlong: str, state: str, key: str, tablefmt: str=None):
     try:
-        return find_nearest_volunteers(latlong, state, key, gc)
+        return find_nearest_volunteers(latlong, state, key, gc, tablefmt)
     except Exception as e:
         print(e)

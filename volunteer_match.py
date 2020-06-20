@@ -3,6 +3,7 @@ import json
 import gspread
 import pandas as pd
 import geopy.distance
+from tabulate import tabulate
 
 
 def miles_between(row, client_lat, client_long):
@@ -19,12 +20,15 @@ def miles_between(row, client_lat, client_long):
     return round(geopy.distance.VincentyDistance(volunteer_coords, client_coords).miles, 2)
 
 
-def find_nearest_volunteers(lat_long, state, key, gc):
+def find_nearest_volunteers(lat_long, state, key, gc, tablefmt):
     '''
-    Returns a list of the enarest volunteers in the state to the given client's coordinates
-    :param lat_long: the client's coorindates (i.e. '40.23893, -80.32871')
+    Returns a list of the nearest volunteers in the state to the given client's coordinates
+    :param lat_long: the client's coordinates (i.e. '40.23893, -80.32871')
     :param state: the client's state (i.e. 'Pennsylvania')
     :param key: the key to the Google Sheet of all Volunteers
+    :param gc: an instance of the the gspread python library
+    :param tablefmt: (Optional) a String of the supported table format type for a pretty text output (https://github.com/astanin/python-tabulate#table-format)
+    Do not write in anything for JSON output
     :return: a Dictionary of the the 10 nearest volunteers, including their names, emails, and miles from client
     '''
 
@@ -49,9 +53,14 @@ def find_nearest_volunteers(lat_long, state, key, gc):
     # Get 10 closest volunteers
     df['Name'] = df['What is your first name?'].astype(str) + ' ' + df['What is your last name?'].astype(str)
     df.rename(columns={'What is your e-mail address?': 'E-mail'}, inplace=True)
-    df = df[['Name', 'E-mail', 'Miles from Client']].sort_values(by=['Miles from Client'], ascending=True).head(10)
+    df = df[['Name', 'E-mail', 'Miles from Client']]
+    df = df.drop_duplicates()
+    df = df.sort_values(by=['Miles from Client'], ascending=True).head(10)
 
     # Export important fields to dictionary
     volunteer_dict = df.to_dict('records')
 
-    return volunteer_dict
+    if tablefmt:
+        return tabulate(volunteer_dict, headers="keys", tablefmt=tablefmt)
+    else:
+        return volunteer_dict
