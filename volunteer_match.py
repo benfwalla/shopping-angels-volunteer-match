@@ -50,12 +50,12 @@ def find_nearest_volunteers(lat_long, state, key, gc, tablefmt=None):
     # Calculate miles between volunteers and client
     df['Miles from Client'] = df.apply(miles_between, axis=1, args=(client_lat, client_long))
 
-    # Get 10 closest volunteers
+    # Get 5 closest volunteers
     df['Name'] = df['What is your first name?'].astype(str) + ' ' + df['What is your last name?'].astype(str)
     df.rename(columns={'What is your e-mail address?': 'E-mail'}, inplace=True)
     df = df[['Name', 'E-mail', 'Miles from Client']]
     df = df.drop_duplicates()
-    df = df.sort_values(by=['Miles from Client'], ascending=True).head(10)
+    df = df.sort_values(by=['Miles from Client'], ascending=True).head(5)
 
     # Export important fields to dictionary
     volunteer_dict = df.to_dict('records')
