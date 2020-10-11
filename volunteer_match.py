@@ -32,6 +32,10 @@ def find_nearest_volunteers(lat_long, state, key, gc, tablefmt=None):
     :return: a Dictionary of the the 10 nearest volunteers, including their names, emails, and miles from client
     '''
 
+    # If empty lat_long
+    if lat_long.strip() == ',' or lat_long.strip() == '':
+        return {}
+
     # Get volunteer mastersheet from Google Sheets
     sh = gc.open_by_key(key)
     ws = sh.worksheet('MasterVolunteer')
