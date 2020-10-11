@@ -34,7 +34,10 @@ def find_nearest_volunteers(lat_long, state, key, gc, tablefmt=None):
 
     # If empty lat_long
     if lat_long.strip() == ',' or lat_long.strip() == '':
-        return {}
+        if tablefmt:
+            return ''
+        else:
+            return {}
 
     # Get volunteer mastersheet from Google Sheets
     sh = gc.open_by_key(key)
